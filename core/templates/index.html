@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Repo Analyzer</title>
+</head>
+<body>
+    <h2>Enter GitHub Repository URL</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="repo_url" placeholder="https://github.com/user/repo" required>
+        <button type="submit">Analyze</button>
+    </form>
+
+    {% if repo_url %}
+        <p>You entered: {{ repo_url }}</p>
+    {% endif %}
+
+    {% if data %}
+        <h3>Repository Info:</h3>
+        <p>Name: {{ data.name }}</p>
+        <p>Stars: {{ data.stars }}</p>
+        <p>Language: {{ data.language }}</p>
+    {% endif %}
+</body>
+</html>
