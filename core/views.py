@@ -11,8 +11,15 @@ def home(request):
         repo = parts[-1]
 
         gh = GitHubService()
-        data = gh.get_repo_info(owner, repo)
 
-        return render(request, "index.html", {"data": data})
+        repo_data = gh.get_repo_info(owner, repo)
+        issues = gh.get_issues(owner, repo)
+        prs = gh.get_pull_requests(owner, repo)
+
+        return render(request, "index.html", {
+            "data": repo_data,
+            "issues": issues,
+            "prs": prs
+        })
 
     return render(request, "index.html")

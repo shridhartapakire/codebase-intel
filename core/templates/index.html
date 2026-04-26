@@ -22,5 +22,18 @@
         <p>Stars: {{ data.stars }}</p>
         <p>Language: {{ data.language }}</p>
     {% endif %}
+
+    {% if issues %}
+        <h3>Issues:</h3>
+        <p>Open: {{ issues.open }}</p>
+        <p>Closed: {{ issues.closed }}</p>
+    {% endif %}
+
+    {% if prs %}
+        <h3>Pull Requests:</h3>
+        <p>Open: {{ prs.open }}</p>
+        <p>Closed: {{ prs.closed }}</p>
+    {% endif %}
+
 </body>
 </html>
