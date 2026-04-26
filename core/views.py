@@ -15,11 +15,15 @@ def home(request):
         repo_data = gh.get_repo_info(owner, repo)
         issues = gh.get_issues(owner, repo)
         prs = gh.get_pull_requests(owner, repo)
+        contributors = gh.get_contributors(owner, repo)
+        commits = gh.get_commits(owner, repo)
 
         return render(request, "index.html", {
             "data": repo_data,
             "issues": issues,
-            "prs": prs
+            "prs": prs,
+            "contributors": contributors,
+            "commits": commits
         })
 
     return render(request, "index.html")

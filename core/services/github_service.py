@@ -40,3 +40,31 @@ class GitHubService:
             "open": len(open_prs.json()),
             "closed": len(closed_prs.json())
         }
+    
+    def get_contributors(self, owner, repo):
+        url = f"{self.BASE_URL}/repos/{owner}/{repo}/contributors"
+
+        response = requests.get(url, params={"per_page": 5})
+        data = response.json()
+
+        return [
+            {
+                "username": user["login"],
+                "contributions": user["contributions"]
+            }
+            for user in data
+        ]
+    
+    def get_commits(self, owner, repo):
+        url = f"{self.BASE_URL}/repos/{owner}/{repo}/commits"
+
+        response = requests.get(url, params={"per_page": 5})
+        data = response.json()
+
+        return [
+            {
+                "message": commit["commit"]["message"].split("\n")[0],
+                "author": commit["commit"]["author"]["name"]
+            }
+            for commit in data
+        ]

@@ -35,5 +35,23 @@
         <p>Closed: {{ prs.closed }}</p>
     {% endif %}
 
+    {% if contributors %}
+        <h3>Top Contributors:</h3>
+        <ul>
+            {% for c in contributors %}
+                <li>{{ c.username }} ({{ c.contributions }} contributions)</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if commits %}
+        <h3>Recent Commits:</h3>
+        <ul>
+            {% for c in commits %}
+                <li>{{ c.message }} - {{ c.author }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
 </body>
 </html>
