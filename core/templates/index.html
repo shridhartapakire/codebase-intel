@@ -1,57 +1,113 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Repo Analyzer</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 10px;
+            width: 60%;
+        }
+
+        button {
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+        }
+
+        .card {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h2>Enter GitHub Repository URL</h2>
+    <div class="container">
+        <h2>GitHub Repo Analyzer</h2>
 
-    <form method="POST">
-        {% csrf_token %}
-        <input type="text" name="repo_url" placeholder="https://github.com/user/repo" required>
-        <button type="submit">Analyze</button>
-    </form>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="repo_url" placeholder="https://github.com/user/repo" required>
+            <button type="submit">Analyze</button>
+        </form>
 
-    {% if repo_url %}
-        <p>You entered: {{ repo_url }}</p>
-    {% endif %}
+        {% if error %}
+            <p class="error">Error: {{ error }}</p>
+        {% endif %}
 
-    {% if data %}
-        <h3>Repository Info:</h3>
-        <p>Name: {{ data.name }}</p>
-        <p>Stars: {{ data.stars }}</p>
-        <p>Language: {{ data.language }}</p>
-    {% endif %}
+        {% if data %}
+        <div class="card">
+            <h3>Repository Info</h3>
+            <p><b>Name:</b> {{ data.name }}</p>
+            <p><b>Stars:</b> {{ data.stars }}</p>
+            <p><b>Language:</b> {{ data.language }}</p>
+        </div>
+        {% endif %}
 
-    {% if issues %}
-        <h3>Issues:</h3>
-        <p>Open: {{ issues.open }}</p>
-        <p>Closed: {{ issues.closed }}</p>
-    {% endif %}
+        {% if issues %}
+        <div class="card">
+            <h3>Issues</h3>
+            <p>Open: {{ issues.open }}</p>
+        </div>
+        {% endif %}
 
-    {% if prs %}
-        <h3>Pull Requests:</h3>
-        <p>Open: {{ prs.open }}</p>
-        <p>Closed: {{ prs.closed }}</p>
-    {% endif %}
+        {% if prs %}
+        <div class="card">
+            <h3>Pull Requests</h3>
+            <p>Open: {{ prs.open }}</p>
+        </div>
+        {% endif %}
 
-    {% if contributors %}
-        <h3>Top Contributors:</h3>
-        <ul>
-            {% for c in contributors %}
-                <li>{{ c.username }} ({{ c.contributions }} contributions)</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        {% if contributors %}
+        <div class="card">
+            <h3>Top Contributors</h3>
+            <ul>
+                {% for c in contributors %}
+                    <li>{{ c.username }} ({{ c.contributions }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
 
-    {% if commits %}
-        <h3>Recent Commits:</h3>
-        <ul>
-            {% for c in commits %}
-                <li>{{ c.message }} - {{ c.author }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        {% if commits %}
+        <div class="card">
+            <h3>Recent Commits</h3>
+            <ul>
+                {% for c in commits %}
+                    <li>{{ c.message }} - {{ c.author }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
 
 </body>
 </html>
