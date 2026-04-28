@@ -63,12 +63,12 @@
             <p class="error">Error: {{ error }}</p>
         {% endif %}
 
-        {% if data %}
+        {% if repo %}
         <div class="card">
             <h3>Repository Info</h3>
-            <p><b>Name:</b> {{ data.name }}</p>
-            <p><b>Stars:</b> {{ data.stars }}</p>
-            <p><b>Language:</b> {{ data.language }}</p>
+            <p><b>Name:</b> {{ repo.name }}</p>
+            <p><b>Stars:</b> {{ repo.stars }}</p>
+            <p><b>Language:</b> {{ repo.language }}</p>
         </div>
         {% endif %}
 
