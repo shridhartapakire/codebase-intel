@@ -47,6 +47,11 @@
             color: red;
             text-align: center;
         }
+
+        .summary-box {
+            line-height: 1.6;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -69,6 +74,15 @@
             <p><b>Name:</b> {{ repo.name }}</p>
             <p><b>Stars:</b> {{ repo.stars }}</p>
             <p><b>Language:</b> {{ repo.language }}</p>
+        </div>
+        {% endif %}
+
+        {% if summary %}
+        <div class="card">
+            <h3>AI Summary</h3>
+            <div class="summary-box">
+                {{ summary|linebreaks }}
+            </div>
         </div>
         {% endif %}
 

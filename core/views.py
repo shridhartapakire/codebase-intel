@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from core.services.github_service import GitHubService
+from core.services.ai_service import AIService
 
 def home(request):
     if request.method == "POST":
@@ -7,7 +8,13 @@ def home(request):
 
         try:
             gh = GitHubService()
+            ai = AIService()
+
             data = gh.get_all_data(repo_url)
+
+            summary = ai.summarize_repo(data)
+
+            data["summary"] = summary
 
             return render(request, "index.html", data)
 
