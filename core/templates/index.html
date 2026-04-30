@@ -86,6 +86,24 @@
         </div>
         {% endif %}
 
+        {% if rating %}
+        <div class="card">
+            <h3>Repository Rating</h3>
+            <p style="color: orange;"><b>⭐ {{ rating }}</b></p>
+        </div>
+        {% endif %}
+
+        {% if suggestions %}
+        <div class="card">
+            <h3>💡 Suggestions</h3>
+            <ul>
+                {% for s in suggestions %}
+                    <li>{{ s }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
         {% if issues %}
         <div class="card">
             <h3>Issues</h3>

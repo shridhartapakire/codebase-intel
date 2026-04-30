@@ -13,8 +13,12 @@ def home(request):
             data = gh.get_all_data(repo_url)
 
             summary = ai.summarize_repo(data)
+            rating = ai.rate_repo(data)
+            suggestions = ai.get_suggestions(data)
 
             data["summary"] = summary
+            data["rating"] = rating
+            data["suggestions"] = suggestions
 
             return render(request, "index.html", data)
 
