@@ -1,3 +1,5 @@
+from django.utils import timezone
+from datetime import timedelta
 from django.shortcuts import render
 from core.services.github_service import GitHubService
 from core.services.ai_service import AIService
@@ -17,7 +19,14 @@ def home(request):
             # 🔥 STEP 1: Check DB first
             existing = RepositoryAnalysis.objects.filter(repo_url=repo_url).first()
 
+            is_fresh = False
+
             if existing:
+                time_diff = timezone.now() - existing.updated_at
+                if time_diff < timedelta(hours=1):
+                    is_fresh = True
+
+            if existing and is_fresh:
                 # ✅ Load from DB (FAST)
                 data = {
                     "repo": {
