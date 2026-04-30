@@ -14,28 +14,48 @@ def home(request):
             gh = GitHubService()
             ai = AIService()
 
-            data = gh.get_all_data(repo_url)
+            # 🔥 STEP 1: Check DB first
+            existing = RepositoryAnalysis.objects.filter(repo_url=repo_url).first()
 
-            summary = ai.summarize_repo(data)
-            rating = ai.rate_repo(data)
-            suggestions = ai.get_suggestions(data)
-
-            data["summary"] = summary
-            data["rating"] = rating
-            data["suggestions"] = suggestions
-
-            # 🔥 SAVE TO DATABASE
-            RepositoryAnalysis.objects.update_or_create(
-                repo_url=repo_url,
-                defaults={
-                    "name": data["repo"]["name"],
-                    "stars": data["repo"]["stars"],
-                    "language": data["repo"]["language"],
-                    "issues": data["issues"]["open"],
-                    "summary": summary,
-                    "rating": rating,
+            if existing:
+                # ✅ Load from DB (FAST)
+                data = {
+                    "repo": {
+                        "name": existing.name,
+                        "stars": existing.stars,
+                        "language": existing.language,
+                    },
+                    "issues": {"open": existing.issues},
+                    "summary": existing.summary,
+                    "rating": existing.rating,
                 }
-            )
+                suggestions = [] 
+                data["suggestions"] = suggestions
+
+            else:
+                # ❌ Not in DB → Call API
+                data = gh.get_all_data(repo_url)
+
+                summary = ai.summarize_repo(data)
+                rating = ai.rate_repo(data)
+                suggestions = ai.get_suggestions(data)
+
+                data["summary"] = summary
+                data["rating"] = rating
+                data["suggestions"] = suggestions
+
+                # 🔥 Save to DB
+                RepositoryAnalysis.objects.update_or_create(
+                    repo_url=repo_url,
+                    defaults={
+                        "name": data["repo"]["name"],
+                        "stars": data["repo"]["stars"],
+                        "language": data["repo"]["language"],
+                        "issues": data["issues"]["open"],
+                        "summary": summary,
+                        "rating": rating,
+                    }
+                )
 
             analyses = RepositoryAnalysis.objects.order_by("-created_at")[:5]
             data["analyses"] = analyses
