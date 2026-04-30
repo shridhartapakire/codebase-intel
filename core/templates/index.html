@@ -64,6 +64,21 @@
             <button type="submit">Analyze</button>
         </form>
 
+        {% if analyses %}
+        <div class="card">
+            <h3>Recent Analyses</h3>
+            <ul>
+                {% for a in analyses %}
+                    <li>
+                        <a href="/?repo_url={{ a.repo_url }}">
+                            <b>{{ a.name }}</b> (⭐ {{ a.stars }}) - {{ a.rating }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
         {% if error %}
             <p class="error">Error: {{ error }}</p>
         {% endif %}
