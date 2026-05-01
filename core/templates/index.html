@@ -92,6 +92,14 @@
         </div>
         {% endif %}
 
+        {% if repo %}
+        <form method="GET" style="text-align:center; margin-bottom: 20px;">
+            <input type="hidden" name="repo_url" value="{{ request.GET.repo_url }}">
+            <input type="hidden" name="refresh" value="true">
+            <button type="submit">🔁 Refresh Data</button>
+        </form>
+        {% endif %}
+
         {% if summary %}
         <div class="card">
             <h3>AI Summary</h3>

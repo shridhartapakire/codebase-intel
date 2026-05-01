@@ -7,6 +7,7 @@ from core.models import RepositoryAnalysis
 
 def home(request):
 
+    refresh = request.GET.get("refresh")
     repo_url = request.GET.get("repo_url")
 
     if request.method == "POST" or repo_url:
@@ -26,7 +27,7 @@ def home(request):
                 if time_diff < timedelta(hours=1):
                     is_fresh = True
 
-            if existing and is_fresh:
+            if existing and is_fresh and refresh != "true":
                 # ✅ Load from DB (FAST)
                 data = {
                     "repo": {
