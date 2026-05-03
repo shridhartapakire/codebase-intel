@@ -33,6 +33,7 @@
             background: #007bff;
             color: white;
             border: none;
+            cursor: pointer;
         }
 
         .card {
@@ -58,12 +59,19 @@
     <div class="container">
         <h2>GitHub Repo Analyzer</h2>
 
-        <form method="POST">
+        <!-- Analyze Form -->
+        <form id="analyze-form" method="POST">
             {% csrf_token %}
             <input type="text" name="repo_url" placeholder="https://github.com/user/repo" required>
             <button type="submit">Analyze</button>
         </form>
 
+        <!-- Loading -->
+        <div id="loading" style="display:none; text-align:center; margin-bottom:20px;">
+            <h3>⏳ Analyzing repository... Please wait</h3>
+        </div>
+
+        <!-- History -->
         {% if analyses %}
         <div class="card">
             <h3>Recent Analyses</h3>
@@ -83,6 +91,7 @@
             <p class="error">Error: {{ error }}</p>
         {% endif %}
 
+        <!-- Repo Info -->
         {% if repo %}
         <div class="card">
             <h3>Repository Info</h3>
@@ -92,14 +101,16 @@
         </div>
         {% endif %}
 
+        <!-- Refresh Button -->
         {% if repo %}
-        <form method="GET" style="text-align:center; margin-bottom: 20px;">
+        <form id="refresh-form" method="GET">
             <input type="hidden" name="repo_url" value="{{ request.GET.repo_url }}">
             <input type="hidden" name="refresh" value="true">
             <button type="submit">🔁 Refresh Data</button>
         </form>
         {% endif %}
 
+        <!-- Summary -->
         {% if summary %}
         <div class="card">
             <h3>AI Summary</h3>
@@ -109,6 +120,7 @@
         </div>
         {% endif %}
 
+        <!-- Rating -->
         {% if rating %}
         <div class="card">
             <h3>Repository Rating</h3>
@@ -116,6 +128,7 @@
         </div>
         {% endif %}
 
+        <!-- Suggestions -->
         {% if suggestions %}
         <div class="card">
             <h3>💡 Suggestions</h3>
@@ -127,6 +140,7 @@
         </div>
         {% endif %}
 
+        <!-- Issues -->
         {% if issues %}
         <div class="card">
             <h3>Issues</h3>
@@ -134,6 +148,7 @@
         </div>
         {% endif %}
 
+        <!-- PRs -->
         {% if prs %}
         <div class="card">
             <h3>Pull Requests</h3>
@@ -141,6 +156,7 @@
         </div>
         {% endif %}
 
+        <!-- Contributors -->
         {% if contributors %}
         <div class="card">
             <h3>Top Contributors</h3>
@@ -152,6 +168,7 @@
         </div>
         {% endif %}
 
+        <!-- Commits -->
         {% if commits %}
         <div class="card">
             <h3>Recent Commits</h3>
@@ -163,6 +180,17 @@
         </div>
         {% endif %}
     </div>
+
+    <!-- JS -->
+    <script>
+        document.getElementById("analyze-form")?.addEventListener("submit", () => {
+            document.getElementById("loading").style.display = "block";
+        });
+
+        document.getElementById("refresh-form")?.addEventListener("submit", () => {
+            document.getElementById("loading").style.display = "block";
+        });
+    </script>
 
 </body>
 </html>
