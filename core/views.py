@@ -4,6 +4,7 @@ from django.shortcuts import render
 from core.services.github_service import GitHubService
 from core.services.ai_service import AIService
 from core.models import RepositoryAnalysis
+from core.services.analytics_service import AnalyticsService
 
 def home(request):
 
@@ -16,6 +17,8 @@ def home(request):
         try:
             gh = GitHubService()
             ai = AIService()
+            analytics = AnalyticsService()
+
 
             # 🔥 STEP 1: Check DB first
             existing = RepositoryAnalysis.objects.filter(repo_url=repo_url).first()
@@ -36,11 +39,21 @@ def home(request):
                         "language": existing.language,
                     },
                     "issues": {"open": existing.issues},
+                    "prs": {"open": 0},
+                    "contributors": [],
+                    "commits": [],
                     "summary": existing.summary,
                     "rating": existing.rating,
                 }
                 suggestions = [] 
                 data["suggestions"] = suggestions
+
+                
+                health_score = analytics.calculate_health_score(data)
+                health_label = analytics.get_health_label(health_score)
+
+                data["health_score"] = health_score
+                data["health_label"] = health_label
 
             else:
                 # ❌ Not in DB → Call API
@@ -53,6 +66,13 @@ def home(request):
                 data["summary"] = summary
                 data["rating"] = rating
                 data["suggestions"] = suggestions
+
+
+                health_score = analytics.calculate_health_score(data)
+                health_label = analytics.get_health_label(health_score)
+
+                data["health_score"] = health_score
+                data["health_label"] = health_label
 
                 # 🔥 Save to DB
                 RepositoryAnalysis.objects.update_or_create(
