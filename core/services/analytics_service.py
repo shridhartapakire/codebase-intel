@@ -52,3 +52,44 @@ class AnalyticsService:
             return "Average"
         else:
             return "Poor"
+        
+    def generate_insights(self, data):
+        insights = []
+
+        stars = data["repo"]["stars"]
+        issues = data["issues"]["open"]
+        prs = data["prs"]["open"]
+        contributors = len(data["contributors"])
+        commits = len(data["commits"])
+
+        # 🚨 RED FLAGS
+        if stars < 50:
+            insights.append("🚨 Very low popularity (few stars)")
+
+        if commits == 0:
+            insights.append("🚨 No recent commits (inactive project)")
+
+        # ⚠️ WARNINGS
+        if issues > 300:
+            insights.append("⚠️ High number of open issues")
+
+        if contributors <= 1:
+            insights.append("⚠️ Low contributor count (single maintainer risk)")
+
+        if prs < 2:
+            insights.append("⚠️ Low pull request activity")
+
+        # 💡 POSITIVE SIGNALS
+        if stars > 10000:
+            insights.append("💡 Highly popular repository")
+
+        if contributors > 5:
+            insights.append("💡 Strong contributor community")
+
+        if commits > 5:
+            insights.append("💡 Active development (recent commits)")
+
+        if prs > 10:
+            insights.append("💡 Good PR activity")
+
+        return insights

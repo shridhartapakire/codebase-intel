@@ -54,7 +54,10 @@ def home(request):
 
                 data["health_score"] = health_score
                 data["health_label"] = health_label
-
+                
+                insights = analytics.generate_insights(data)
+                data["insights"] = insights
+            
             else:
                 # ❌ Not in DB → Call API
                 data = gh.get_all_data(repo_url)
@@ -73,6 +76,9 @@ def home(request):
 
                 data["health_score"] = health_score
                 data["health_label"] = health_label
+
+                insights = analytics.generate_insights(data)
+                data["insights"] = insights
 
                 # 🔥 Save to DB
                 RepositoryAnalysis.objects.update_or_create(

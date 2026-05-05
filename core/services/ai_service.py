@@ -122,18 +122,19 @@ class AIService:
             ]
         }
 
-        response = requests.post(url, headers=headers, json=body)
-
-        if response.status_code != 200:
-            return ["Unable to fetch suggestions"]
-
         try:
+            response = requests.post(url, headers=headers, json=body)
+
+            if response.status_code != 200:
+                return ["No suggestions available"]
+
             result = response.json()
             text = result["choices"][0]["message"]["content"]
 
-            # Convert text into list (split by lines)
             suggestions = [line.strip() for line in text.split("\n") if line.strip()]
             return suggestions
 
         except:
-            return ["Error parsing suggestions"]
+            return ["No suggestions available"]
+            
+    

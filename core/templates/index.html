@@ -137,6 +137,18 @@
         </div>
         {% endif %}
 
+        <!-- Insights -->
+        {% if insights %}
+        <div class="card">
+            <h3>📊 Insights</h3>
+            <ul>
+                {% for i in insights %}
+                    <li>{{ i }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
         <!-- Suggestions -->
         {% if suggestions %}
         <div class="card">
