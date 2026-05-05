@@ -16,7 +16,7 @@
 
         h2 {
             text-align: center;
-        }
+        }  
 
         form {
             text-align: center;
@@ -125,6 +125,27 @@
         <div class="card">
             <h3>Repository Rating</h3>
             <p style="color: orange;"><b>⭐ {{ rating }}</b></p>
+        </div>
+        {% endif %}
+
+        <!-- health_score -->
+        {% if health_score %}
+        <div class="card">
+            <h3>📊 Health Score</h3>
+            <p><b>Score:</b> {{ health_score }}/100</p>
+            <p><b>Status:</b> {{ health_label }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Insights -->
+        {% if insights %}
+        <div class="card">
+            <h3>📊 Insights</h3>
+            <ul>
+                {% for i in insights %}
+                    <li>{{ i }}</li>
+                {% endfor %}
+            </ul>
         </div>
         {% endif %}
 
