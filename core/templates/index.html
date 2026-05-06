@@ -137,6 +137,15 @@
         </div>
         {% endif %}
 
+        <!-- Repo Analytics -->
+        {% if repo %}
+        <div class="card">
+            <h3>📊 Repository Analytics</h3>
+
+            <canvas id="repoChart"></canvas>
+        </div>
+        {% endif %}
+
         <!-- Insights -->
         {% if insights %}
         <div class="card">
@@ -211,6 +220,53 @@
         document.getElementById("refresh-form")?.addEventListener("submit", () => {
             document.getElementById("loading").style.display = "block";
         });
+    </script>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const chartElement = document.getElementById('repoChart');
+
+        if (chartElement) {
+
+            const repoChart = new Chart(chartElement, {
+                type: 'bar',
+
+                data: {
+                    labels: [
+                        'Stars',
+                        'Issues',
+                        'PRs',
+                        'Contributors'
+                    ],
+
+                    datasets: [{
+                        label: 'Repository Metrics',
+
+                        data: [
+                            "{{ repo.stars|default:'0' }}",
+                            "{{ issues.open|default:'0' }}",
+                            "{{ prs.open|default:'0' }}",
+                            "{{ contributors|length|default:'0' }}"
+                        ],
+
+                        borderWidth: 1
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+        }
     </script>
 
 </body>
