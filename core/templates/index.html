@@ -132,8 +132,19 @@
         {% if health_score %}
         <div class="card">
             <h3>📊 Health Score</h3>
-            <p><b>Score:</b> {{ health_score }}/100</p>
-            <p><b>Status:</b> {{ health_label }}</p>
+            <p><b>Score:</b> {{ health_score|default:'0' }}/100</p>
+            <p>
+                <b>Status:</b>
+
+                <span style="
+                    padding: 5px 10px;
+                    border-radius: 20px;
+                    background: #4CAF50;
+                    color: white;
+                ">
+                    {{ health_label }}
+                </span>
+            </p>
         </div>
         {% endif %}
 
@@ -143,6 +154,15 @@
             <h3>📊 Repository Analytics</h3>
 
             <canvas id="repoChart"></canvas>
+        </div>
+        {% endif %}
+
+        <!-- Health Distribution -->
+        {% if repo %}
+        <div class="card">
+            <h3>🥧 Repository Health Distribution</h3>
+
+            <canvas id="healthChart"></canvas>
         </div>
         {% endif %}
 
@@ -225,6 +245,7 @@
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- BAR CHART -->
     <script>
         const chartElement = document.getElementById('repoChart');
 
@@ -251,6 +272,14 @@
                             "{{ contributors|length|default:'0' }}"
                         ],
 
+                        backgroundColor: [
+                            '#4CAF50',
+                            '#FF9800',
+                            '#2196F3',
+                            '#9C27B0'
+                        ],
+
+                        borderRadius: 8,
                         borderWidth: 1
                     }]
                 },
@@ -263,6 +292,42 @@
                             beginAtZero: true
                         }
                     }
+                }
+            });
+
+        }
+    </script>
+
+    <!-- DOUGHNUT CHART -->
+    <script>
+        const healthElement = document.getElementById('healthChart');
+
+        if (healthElement) {
+
+            new Chart(healthElement, {
+                type: 'doughnut',
+
+                data: {
+                    labels: [
+                        'Health Score',
+                        'Remaining'
+                    ],
+
+                    datasets: [{
+                        data: [
+                            "{{ health_score|default:'0' }}",
+                            100 - "{{ health_score|default:'0' }}"
+                        ],
+
+                        backgroundColor: [
+                            '#4CAF50',
+                            '#E0E0E0'
+                        ]
+                    }]
+                },
+
+                options: {
+                    responsive: true
                 }
             });
 
