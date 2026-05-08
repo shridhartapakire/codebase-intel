@@ -7,6 +7,13 @@
             background: #f4f6f8;
             margin: 0;
             padding: 20px;
+
+            transition:
+                background 0.3s ease,
+                color 0.3s ease;
+        }
+        * {
+            box-sizing: border-box;
         }
 
         .container {
@@ -28,20 +35,74 @@
             width: 60%;
         }
 
-        button {
-            padding: 10px;
+       button {
+            padding: 10px 18px;
             background: #007bff;
             color: white;
             border: none;
             cursor: pointer;
+            border-radius: 8px;
+
+            transition: background 0.2s ease,
+                        transform 0.2s ease;
+        }
+
+        button:hover {
+            background: #0056b3;
+
+            transform: scale(1.03);
         }
 
         .card {
             background: white;
             padding: 15px;
             margin-bottom: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+            transition: transform 0.2s ease,
+                        box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+            transition: transform 0.2s ease,
+                        box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+
+            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+        }
+
+        .stat-card h4 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .stat-card p {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
         }
 
         .error {
@@ -53,11 +114,49 @@
             line-height: 1.6;
             font-size: 14px;
         }
+
+        .dark-mode {
+            background: #121212;
+            color: white;
+        }
+
+        .dark-mode .card,
+        .dark-mode .stat-card {
+            background: #1e1e1e;
+            color: white;
+        }
+
+        .dark-mode input {
+            background: #2c2c2c;
+            color: white;
+            border: 1px solid #555;
+        }
+
+        .dark-mode a {
+            color: #4da3ff;
+        }
+
+        .dark-mode button {
+            background: #333;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>GitHub Repo Analyzer</h2>
+
+        <!-- Header -->
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:20px;
+        ">
+            <h2>GitHub Repo Analyzer</h2>
+
+            <button id="theme-toggle">
+                🌙 Dark Mode
+            </button>
+        </div>
 
         <!-- Analyze Form -->
         <form id="analyze-form" method="POST">
@@ -87,8 +186,36 @@
         </div>
         {% endif %}
 
+        <!-- Error -->
         {% if error %}
             <p class="error">Error: {{ error }}</p>
+        {% endif %}
+
+        <!-- Stats Grid -->
+        {% if repo %}
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <h4>⭐ Stars</h4>
+                <p>{{ repo.stars }}</p>
+            </div>
+
+            <div class="stat-card">
+                <h4>🐞 Issues</h4>
+                <p>{{ issues.open }}</p>
+            </div>
+
+            <div class="stat-card">
+                <h4>🔀 PRs</h4>
+                <p>{{ prs.open }}</p>
+            </div>
+
+            <div class="stat-card">
+                <h4>👥 Contributors</h4>
+                <p>{{ contributors|length }}</p>
+            </div>
+
+        </div>
         {% endif %}
 
         <!-- Repo Info -->
@@ -132,8 +259,37 @@
         {% if health_score %}
         <div class="card">
             <h3>📊 Health Score</h3>
-            <p><b>Score:</b> {{ health_score }}/100</p>
-            <p><b>Status:</b> {{ health_label }}</p>
+            <p><b>Score:</b> {{ health_score|default:'0' }}/100</p>
+            <p>
+                <b>Status:</b>
+
+                <span style="
+                    padding: 5px 10px;
+                    border-radius: 20px;
+                    background: #4CAF50;
+                    color: white;
+                ">
+                    {{ health_label }}
+                </span>
+            </p>
+        </div>
+        {% endif %}
+
+        <!-- Repo Analytics -->
+        {% if repo %}
+        <div class="card">
+            <h3>📊 Repository Analytics</h3>
+
+            <canvas id="repoChart" style="max-height: 400px;"></canvas>
+        </div>
+        {% endif %}
+
+        <!-- Health Distribution -->
+        {% if repo %}
+        <div class="card">
+            <h3>🥧 Repository Health Distribution</h3>
+
+            <canvas id="healthChart" style="max-height: 300px;"></canvas>
         </div>
         {% endif %}
 
@@ -161,21 +317,6 @@
         </div>
         {% endif %}
 
-        <!-- Issues -->
-        {% if issues %}
-        <div class="card">
-            <h3>Issues</h3>
-            <p>Open: {{ issues.open }}</p>
-        </div>
-        {% endif %}
-
-        <!-- PRs -->
-        {% if prs %}
-        <div class="card">
-            <h3>Pull Requests</h3>
-            <p>Open: {{ prs.open }}</p>
-        </div>
-        {% endif %}
 
         <!-- Contributors -->
         {% if contributors %}
@@ -210,6 +351,115 @@
 
         document.getElementById("refresh-form")?.addEventListener("submit", () => {
             document.getElementById("loading").style.display = "block";
+        });
+    </script>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- BAR CHART -->
+    <script>
+        const chartElement = document.getElementById('repoChart');
+
+        if (chartElement) {
+
+            const repoChart = new Chart(chartElement, {
+                type: 'bar',
+
+                data: {
+                    labels: [
+                        'Stars',
+                        'Issues',
+                        'PRs',
+                        'Contributors'
+                    ],
+
+                    datasets: [{
+                        label: 'Repository Metrics',
+
+                        data: [
+                            "{{ repo.stars|default:'0' }}",
+                            "{{ issues.open|default:'0' }}",
+                            "{{ prs.open|default:'0' }}",
+                            "{{ contributors|length|default:'0' }}"
+                        ],
+
+                        backgroundColor: [
+                            '#4CAF50',
+                            '#FF9800',
+                            '#2196F3',
+                            '#9C27B0'
+                        ],
+
+                        borderRadius: 8,
+                        borderWidth: 1
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+        }
+    </script>
+
+    <!-- DOUGHNUT CHART -->
+    <script>
+        const healthElement = document.getElementById('healthChart');
+
+        if (healthElement) {
+
+            new Chart(healthElement, {
+                type: 'doughnut',
+
+                data: {
+                    labels: [
+                        'Health Score',
+                        'Remaining'
+                    ],
+
+                    datasets: [{
+                        data: [
+                            "{{ health_score|default:'0' }}",
+                            100 - "{{ health_score|default:'0' }}"
+                        ],
+
+                        backgroundColor: [
+                            '#4CAF50',
+                            '#E0E0E0'
+                        ]
+                    }]
+                },
+
+                options: {
+                    responsive: true
+                }
+            });
+
+        }
+    </script>
+
+    <!-- Theme Toggle -->
+    <script>
+        const themeToggle = document.getElementById("theme-toggle");
+
+        themeToggle.addEventListener("click", () => {
+
+            document.body.classList.toggle("dark-mode");
+
+            if (document.body.classList.contains("dark-mode")) {
+                themeToggle.innerText = "☀️ Light Mode";
+            } else {
+                themeToggle.innerText = "🌙 Dark Mode";
+            }
+
         });
     </script>
 
