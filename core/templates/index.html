@@ -7,8 +7,11 @@
             background: #f4f6f8;
             margin: 0;
             padding: 20px;
-        }
 
+            transition:
+                background 0.3s ease,
+                color 0.3s ease;
+        }
         * {
             box-sizing: border-box;
         }
@@ -111,11 +114,49 @@
             line-height: 1.6;
             font-size: 14px;
         }
+
+        .dark-mode {
+            background: #121212;
+            color: white;
+        }
+
+        .dark-mode .card,
+        .dark-mode .stat-card {
+            background: #1e1e1e;
+            color: white;
+        }
+
+        .dark-mode input {
+            background: #2c2c2c;
+            color: white;
+            border: 1px solid #555;
+        }
+
+        .dark-mode a {
+            color: #4da3ff;
+        }
+
+        .dark-mode button {
+            background: #333;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>GitHub Repo Analyzer</h2>
+
+        <!-- Header -->
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:20px;
+        ">
+            <h2>GitHub Repo Analyzer</h2>
+
+            <button id="theme-toggle">
+                🌙 Dark Mode
+            </button>
+        </div>
 
         <!-- Analyze Form -->
         <form id="analyze-form" method="POST">
@@ -403,6 +444,23 @@
             });
 
         }
+    </script>
+
+    <!-- Theme Toggle -->
+    <script>
+        const themeToggle = document.getElementById("theme-toggle");
+
+        themeToggle.addEventListener("click", () => {
+
+            document.body.classList.toggle("dark-mode");
+
+            if (document.body.classList.contains("dark-mode")) {
+                themeToggle.innerText = "☀️ Light Mode";
+            } else {
+                themeToggle.innerText = "🌙 Dark Mode";
+            }
+
+        });
     </script>
 
 </body>
