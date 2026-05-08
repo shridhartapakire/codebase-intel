@@ -44,6 +44,32 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h4 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .stat-card p {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
         .error {
             color: red;
             text-align: center;
@@ -87,8 +113,36 @@
         </div>
         {% endif %}
 
+        <!-- Error -->
         {% if error %}
             <p class="error">Error: {{ error }}</p>
+        {% endif %}
+
+        <!-- Stats Grid -->
+        {% if repo %}
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <h4>⭐ Stars</h4>
+                <p>{{ repo.stars }}</p>
+            </div>
+
+            <div class="stat-card">
+                <h4>🐞 Issues</h4>
+                <p>{{ issues.open }}</p>
+            </div>
+
+            <div class="stat-card">
+                <h4>🔀 PRs</h4>
+                <p>{{ prs.open }}</p>
+            </div>
+
+            <div class="stat-card">
+                <h4>👥 Contributors</h4>
+                <p>{{ contributors|length }}</p>
+            </div>
+
+        </div>
         {% endif %}
 
         <!-- Repo Info -->
@@ -153,7 +207,7 @@
         <div class="card">
             <h3>📊 Repository Analytics</h3>
 
-            <canvas id="repoChart"></canvas>
+            <canvas id="repoChart" style="max-height: 400px;"></canvas>
         </div>
         {% endif %}
 
@@ -162,7 +216,7 @@
         <div class="card">
             <h3>🥧 Repository Health Distribution</h3>
 
-            <canvas id="healthChart"></canvas>
+            <canvas id="healthChart" style="max-height: 300px;"></canvas>
         </div>
         {% endif %}
 
@@ -190,21 +244,6 @@
         </div>
         {% endif %}
 
-        <!-- Issues -->
-        {% if issues %}
-        <div class="card">
-            <h3>Issues</h3>
-            <p>Open: {{ issues.open }}</p>
-        </div>
-        {% endif %}
-
-        <!-- PRs -->
-        {% if prs %}
-        <div class="card">
-            <h3>Pull Requests</h3>
-            <p>Open: {{ prs.open }}</p>
-        </div>
-        {% endif %}
 
         <!-- Contributors -->
         {% if contributors %}
